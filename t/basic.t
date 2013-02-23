@@ -8,7 +8,6 @@ my $akatus = Business::CPI->new(
     gateway         => 'Akatus',
     receiver_email  => 'aa.borba@yahoo.com.br',
     api_key         => '29D4EB49-735E-429D-A5C3-B19DF50ADC47',
-    currency        => 'BRL'
     );
 
 ok($akatus);
@@ -18,6 +17,7 @@ isa_ok $akatus, "Business::CPI::Gateway::Akatus";
 can_ok $akatus, qw(
                    query_transactions get_transaction_details 
                    notify get_hidden_inputs get_checkout_code
+                   api_key receiver_email
                 );
 
 
@@ -51,8 +51,21 @@ $cart->add_item({
     description => "Espada Ninja do Samurai da Malasia",
     quantity    => 2,
     weight      => 2.25,
+    shipping    => 0,
+    discount    => 0.25,
     });
 
+my $item = $cart->get_item("ABC1234567");
+
+isa_ok $item, "Business::CPI::Item::Akatus";
+
+can_ok $item, qw(discount);
+
+is $item->discount, 0.25, "Discount test";                
+
 my $response = $cart->get_checkout_code;
+
+#use DDP; p $cart, class => {expand => "all"};
+
 
 done_testing;
