@@ -78,8 +78,7 @@ sub _get_xml{
         use_default_namespace => 1,
     );
 
-    my $xml = $writer->($doc, $hash);
-    return $xml->serialize;
+    return $writer->($doc, $hash)->serialize;
 }
 
 sub get_checkout_code {
