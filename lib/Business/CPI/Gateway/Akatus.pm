@@ -71,9 +71,14 @@ sub _get_xml{
 
     my $doc     = XML::LibXML::Document->new('1.0', 'UTF-8');
     my $schema  = XML::Compile::Schema->new("/home/alexandre/Projetos/Business-CPI-Gateway-Akatus/data/cart.xsd");
+#    my $schema  = XML::Compile::Schema->new("/Users/garu/Projects/p5-business-cpi-gateway-akatus/data/cart.xsd");
 
-    my $writer  = $schema->compile(WRITER => '{http://connect.akatus.com/}carrinho');
-    my $xml     = $writer->($doc, $hash);
+    my $writer = $schema->compile(
+        WRITER => '{http://connect.akatus.com/}carrinho',
+        use_default_namespace => 1,
+    );
+
+    my $xml = $writer->($doc, $hash);
     return $xml->serialize;
 }
 
@@ -81,7 +86,6 @@ sub get_checkout_code {
     my($self, $info) = @_;
 
     my $xml = $self->_get_xml($info);
-
     my $ua  = LWP::UserAgent->new;
 
     my $response = $ua->post(
